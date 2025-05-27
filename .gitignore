@@ -6,3 +6,7 @@ __pycache__/
 *.pyo
 *.pyd
 *.pyc
+rvc_gui/models/miku_default_rvc/
+rvc_gui/models/sofia/
+rvc_gui/ffmpeg.exe
+rvc_gui/hubert_base.pt

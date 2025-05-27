@@ -47,6 +47,8 @@ import torch
 import re
 
 ROOT_DIR = os.path.join(os.path.dirname(__file__), 'EmotiVoice')
+RVC_DIR = os.path.join(os.path.dirname(__file__), 'rvc_gui')
+
 if __EMOTI_TTS_DEBUG__:
     logger.debug(f'Emotivoice_TTS ROOT_DIR: {ROOT_DIR}')
 sys.path.append(ROOT_DIR)
@@ -55,6 +57,8 @@ from .EmotiVoice.frontend import g2p_cn_en, read_lexicon, G2p
 from .EmotiVoice.models.prompt_tts_modified.jets import JETSGenerator
 from .EmotiVoice.models.prompt_tts_modified.simbert import StyleEncoder
 from transformers import AutoTokenizer
+
+from .rvc_gui import rvcgui_tts as rvc
 
 import base64
 from pathlib import Path
@@ -343,7 +347,9 @@ params = {
     'show_text': True,
     'autoplay': True,
     'disable_text_stream': False,
-    'prompt': 'happy'
+    'prompt': 'happy',
+    'rvc_model': '',
+    'rvc_model_index': ''
 }
 
 controls = {}
@@ -519,7 +525,8 @@ def output_modifier(string, state):
 
         # Call generate audio and save numpy output by wavio
         gen = generate_audio(output_dir, output_file, texts)
-        wavio.write(str(output_file), gen, config.sampling_rate)
+        rvc.on_button_click(gen,params['rvc_model_index'],str(output_file))
+        #wavio.write(str(output_file), gen, config.sampling_rate)
 
         autoplay = 'autoplay' if params['autoplay'] else ''
         string = f'<audio src="file/{output_file.as_posix()}" controls {autoplay}></audio>'
@@ -558,6 +565,15 @@ def setup():
     if not params['model_swap']:
         load_model()
 
+def onChangeRvcModel(value):
+    indexPath = rvc.selected_model(value)
+    params.update({"rvc_model_index": indexPath})
+    return gr.Textbox.update(value=indexPath)
+
+rvcModels = rvc.refresh_model_list()
+
+if rvcModels:
+    onChangeRvcModel(rvcModels[0])
 
 def ui():
     global controls, params
@@ -574,6 +590,9 @@ def ui():
         controls['output_dir_textbox'] = gr.Textbox(value=params['output_dir'], label='Custom Output Directory')
         controls['model_swap'] = gr.Checkbox(value=params['model_swap'], label='Unload LLM Model to save VRAM')
         controls['sentence_picker'] = gr.Number(value=params['sentence_length'], precision=0, label='Per Audio Words Slicing (# of words)', interactive=True)
+        controls['rvc_model'] = gr.Dropdown(value=params['rvc_model'], choices=rvc.model_folders, label='Rvc Model')
+        controls['rvc_model_index'] = gr.Textbox(value=params['rvc_model_index'], label='Rvc Model index')
+        controls['refresh_model'] = gr.Button('refresh model')
         
         with gr.Row():
             controls['rm_tts_from_hist'] = gr.Button('Permanently remove generated tts from the all historical message storages')
@@ -585,6 +604,7 @@ def ui():
             controls['cls_output_dir_cancel'] = gr.Button('Cancel', visible=False)
             controls['cls_output_dir_confirm'] = gr.Button('Confirm (cannot be undone)', variant="stop", visible=False)
 
+    controls['refresh_model'].click(lambda: rvc.refresh_model_list())
     # remove tts history with confirmation
     controls['rm_tts_from_hist_arr'] = [controls['rm_tts_from_hist_confirm'], controls['rm_tts_from_hist'], controls['rm_tts_from_hist_cancel']]
     controls['rm_tts_from_hist'].click(lambda: [gr.update(visible=True), gr.update(visible=False), gr.update(visible=True)], None, controls['rm_tts_from_hist_arr'])
@@ -619,4 +639,6 @@ def ui():
     controls['output_dir_textbox'].change(lambda x: params.update({'output_dir': x}), controls['output_dir_textbox'], None)
     controls['model_swap'].change(lambda x: params.update({'model_swap': x}), controls['model_swap'], None)
     controls['sentence_picker'].change(lambda x: params.update({'sentence_length': x}), controls['sentence_picker'], None)
+    controls['rvc_model'].change(lambda x: onChangeRvcModel(x), controls['rvc_model'], controls['rvc_model_index'])
+    controls['rvc_model_index'].change(lambda x: params.update({"rvc_model_index": x}), controls['rvc_model_index'], None)
 
