@@ -1,1 +1,39 @@
 wavio
+num2words
+aria2
+joblib
+librosa
+llvmlite
+faiss-cpu
+Cython
+pydub
+ffmpeg-python
+tensorboardX
+json5
+matplotlib
+matplotlib-inline
+praat-parselmouth
+resampy
+scikit-learn
+tornado
+Werkzeug
+uc-micro-py
+sympy
+tabulate
+pyasn1
+pyasn1-modules
+fsspec
+absl-py
+audioread
+uvicorn
+pyworld
+httpx
+onnxruntime; sys_platform == 'darwin'
+onnxruntime-gpu; sys_platform != 'darwin'
+torchcrepe
+torchfcpe
+ffmpy
+python-dotenv
+av
+
+pip install git+https://github.com/Tps-F/fairseq.git@main
