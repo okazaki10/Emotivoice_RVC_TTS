@@ -5,7 +5,7 @@ Assume you are in the root directory of the text-generation-webui
 
 ```
 cd ./extensions
-git clone --depth 1 --recursive https://github.com/yhyu13/Emotivoice_TTS.git
+git clone --depth 1 --recursive https://github.com/okazaki10/Emotivoice_RVC_TTS.git
 
 cd ./Emotivoice_TTS
 pip install -r requirements.txt
