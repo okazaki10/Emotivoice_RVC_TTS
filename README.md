@@ -7,7 +7,7 @@ Assume you are in the root directory of the text-generation-webui
 cd ./extensions
 git clone --depth 1 --recursive https://github.com/okazaki10/Emotivoice_RVC_TTS.git
 
-cd ./Emotivoice_TTS
+cd ./Emotivoice_RVC_TTS
 pip install -r requirements.txt
 
 cd ./EmotiVoice
@@ -25,7 +25,7 @@ cd ../../../
 python sever.py --extensions EmotiVoice_RVC_TTS
 ```
 
-and then put your rvc model in Emotivoice_TTS/rvc_gui/models
+and then put your rvc model in Emotivoice_RVC_TTS/rvc_gui/models
 
 # Samlpes
 
