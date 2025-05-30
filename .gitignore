@@ -7,5 +7,4 @@ __pycache__/
 *.pyd
 *.pyc
 rvc_gui/models/
-rvc_gui/ffmpeg.exe
 rvc_gui/hubert_base.pt
