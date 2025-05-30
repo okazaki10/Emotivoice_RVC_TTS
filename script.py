@@ -50,7 +50,7 @@ ROOT_DIR = os.path.join(os.path.dirname(__file__), 'EmotiVoice')
 RVC_DIR = os.path.join(os.path.dirname(__file__), 'rvc_gui')
 
 if __EMOTI_TTS_DEBUG__:
-    logger.debug(f'Emotivoice_TTS ROOT_DIR: {ROOT_DIR}')
+    logger.debug(f'Emotivoice_RVC_TTS ROOT_DIR: {ROOT_DIR}')
 sys.path.append(ROOT_DIR)
 
 from .EmotiVoice.frontend import g2p_cn_en, read_lexicon, G2p
@@ -340,7 +340,7 @@ def split_and_recombine_text(text, desired_length=200, max_length=300):
 current_params = None
 params = {
     'activate': True,
-    'output_dir': 'extensions/Emotivoice_TTS/outputs',
+    'output_dir': 'extensions/Emotivoice_RVC_TTS/outputs',
     'voice': speakers[0],
     'model_swap': False,
     'sentence_length': 20,
@@ -396,7 +396,7 @@ def clear_output_dir():
     for f in os.listdir(params['output_dir']):
         if f.endswith(".wav"):
             if __EMOTI_TTS_DEBUG__:
-                logger.debug(f"Emotivoice_TTS Removing {f}")
+                logger.debug(f"Emotivoice_RVC_TTS Removing {f}")
             os.remove(os.path.join(params['output_dir'], f))
 
 def toggle_text_in_history(history):
@@ -497,7 +497,7 @@ def output_modifier(string, state):
             load_model()
 
         if models is None:
-            logger.warning('[Emotivoice_TTS] No models loaded')
+            logger.warning('[Emotivoice_RVC_TTS] No models loaded')
             return string
 
         original_string = string
@@ -515,7 +515,7 @@ def output_modifier(string, state):
             return string
 
         out_dir_root = params['output_dir'] if params['output_dir'] is not None and Path(params['output_dir']).is_dir() \
-            else 'extensions/Emotivoice_TTS/outputs'
+            else 'extensions/Emotivoice_RVC_TTS/outputs'
 
         output_dir = Path(out_dir_root).joinpath('parts')
         if not output_dir.is_dir():
