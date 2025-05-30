@@ -17,8 +17,12 @@ git lfs clone --depth 1 https://huggingface.co/WangZeJun/simbert-base-chinese Wa
 rm -rf outputs
 git lfs clone --depth 1 https://www.modelscope.cn/syq163/outputs.git
 
+cd ./rvc_gui
+git lfs pull
+git lfs clone --depth 1 https://huggingface.co/kindahex/voice-conversion/blob/main/hubert_base.pt
+
 cd ../../../
-python sever.py --extensions EmotiVoice_TTS
+python sever.py --extensions EmotiVoice_RVC_TTS
 ```
 
 # Samlpes
