@@ -226,7 +226,7 @@ def get_style_embedding(prompt, tokenizer, style_encoder):
     return style_embedding
 
 def tts(prompt, content, speaker, models):
-    with time_context(f'Calling EmotiVoice tts for \"{content[:20]}\"'):
+    with time_context(f'Calling EmotiVoice RVC tts for \"{content[:20]}\"'):
         (style_encoder, generator, tokenizer, token2id, speaker2id)=models
         
         text =  g2p_cn_en(content, g2p, lexicon)
@@ -602,7 +602,7 @@ def onChangeRvcMethod(value):
 def ui():
     global controls, params
     # Gradio elements
-    with gr.Accordion("Emotivoice TTS"):
+    with gr.Accordion("Emotivoice RVC TTS"):
         with gr.Row():
             controls['activate'] = gr.Checkbox(value=params['activate'], label='Activate TTS')
             controls['autoplay'] = gr.Checkbox(value=params['autoplay'], label='Play TTS automatically')
