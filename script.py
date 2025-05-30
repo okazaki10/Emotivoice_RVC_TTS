@@ -352,7 +352,8 @@ params = {
     'rvc_model_index': '',
     'rvc_method_entry': 'crepe',
     'rvc_pitch': 0,
-    'rvc_crepe_hop': 128
+    'rvc_crepe_hop': 128,
+    'rvc_retrieval_rate': 0.4
 }
 
 controls = {}
@@ -530,7 +531,7 @@ def output_modifier(string, state):
         # Call generate audio and save numpy output by wavio
         gen = generate_audio(output_dir, output_file, texts)
         if rvc.model_loaded:
-            rvc.on_button_click(gen,params['rvc_model_index'],str(output_file),params['rvc_pitch'],params['rvc_crepe_hop'],params['rvc_method_entry'])
+            rvc.on_button_click(gen,params['rvc_model_index'],str(output_file),params['rvc_pitch'],params['rvc_crepe_hop'],params['rvc_method_entry'],params['rvc_retrieval_rate'])
         else:
             if rvcModels:
                 indexPath = rvc.selected_model(rvcModels[0])
@@ -540,7 +541,7 @@ def output_modifier(string, state):
                     print("rvc model load error, using default emotivoice")
                     wavio.write(str(output_file), gen, config.sampling_rate)
                 else:
-                    rvc.on_button_click(gen,params['rvc_model_index'],str(output_file),params['rvc_pitch'],params['rvc_crepe_hop'],params['rvc_method_entry'])
+                    rvc.on_button_click(gen,params['rvc_model_index'],str(output_file),params['rvc_pitch'],params['rvc_crepe_hop'],params['rvc_method_entry'],params['rvc_retrieval_rate'])
             else:
                 print("no rvc model loaded, using default emotivoice")
                 wavio.write(str(output_file), gen, config.sampling_rate)
@@ -620,6 +621,7 @@ def ui():
         controls['rvc_method_entry'] = gr.Dropdown(value=params['rvc_method_entry'], choices=["dio", "pm", "harvest", "crepe", "crepe-tiny" ], label='F0 Method')
         controls['rvc_pitch'] = gr.Textbox(value=params['rvc_pitch'], label='Pitch')
         controls['rvc_crepe_hop'] = gr.Textbox(value=params['rvc_crepe_hop'], label='Crepe Hop')
+        controls['rvc_retrieval_rate'] = gr.Textbox(value=params['rvc_retrieval_rate'], label='Retrieval Rate')
         
         with gr.Row():
             controls['rm_tts_from_hist'] = gr.Button('Permanently remove generated tts from the all historical message storages')
@@ -671,4 +673,5 @@ def ui():
     controls['rvc_method_entry'].change(lambda x: onChangeRvcMethod(x), controls['rvc_method_entry'], controls['rvc_crepe_hop'])
     controls['rvc_pitch'].change(lambda x: params.update({"rvc_pitch": x}), controls['rvc_pitch'], None)
     controls['rvc_crepe_hop'].change(lambda x: params.update({"rvc_crepe_hop": x}), controls['rvc_crepe_hop'], None)
+    controls['rvc_retrieval_rate'].change(lambda x: params.update({"rvc_retrieval_rate": x}), controls['rvc_retrieval_rate'], None)
 
