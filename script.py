@@ -619,9 +619,9 @@ def ui():
         controls['refresh_model'] = gr.Button('Refresh Rvc Model')
 
         controls['rvc_method_entry'] = gr.Dropdown(value=params['rvc_method_entry'], choices=["dio", "pm", "harvest", "crepe", "crepe-tiny" ], label='F0 Method')
-        controls['rvc_pitch'] = gr.Textbox(value=params['rvc_pitch'], label='Pitch')
-        controls['rvc_crepe_hop'] = gr.Textbox(value=params['rvc_crepe_hop'], label='Crepe Hop')
-        controls['rvc_retrieval_rate'] = gr.Textbox(value=params['rvc_retrieval_rate'], label='Retrieval Rate')
+        controls['rvc_pitch'] = gr.Number(value=params['rvc_pitch'], precision=0, label='Pitch')
+        controls['rvc_crepe_hop'] = gr.Number(value=params['rvc_crepe_hop'], precision=0, label='Crepe Hop')
+        controls['rvc_retrieval_rate'] = gr.Number(value=params['rvc_retrieval_rate'], label='Retrieval Rate')
         
         with gr.Row():
             controls['rm_tts_from_hist'] = gr.Button('Permanently remove generated tts from the all historical message storages')
