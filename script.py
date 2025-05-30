@@ -349,7 +349,10 @@ params = {
     'disable_text_stream': False,
     'prompt': 'happy',
     'rvc_model': '',
-    'rvc_model_index': ''
+    'rvc_model_index': '',
+    'rvc_method_entry': 'crepe',
+    'rvc_pitch': 0,
+    'rvc_crepe_hop': 128
 }
 
 controls = {}
@@ -450,6 +453,7 @@ def history_modifier(history):
 
     return history
 
+rvcModels = rvc.refresh_model_list()
 
 def output_modifier(string, state):
     """
@@ -525,8 +529,21 @@ def output_modifier(string, state):
 
         # Call generate audio and save numpy output by wavio
         gen = generate_audio(output_dir, output_file, texts)
-        rvc.on_button_click(gen,params['rvc_model_index'],str(output_file))
-        #wavio.write(str(output_file), gen, config.sampling_rate)
+        if rvc.model_loaded:
+            rvc.on_button_click(gen,params['rvc_model_index'],str(output_file),params['rvc_pitch'],params['rvc_crepe_hop'],params['rvc_method_entry'])
+        else:
+            if rvcModels:
+                indexPath = rvc.selected_model(rvcModels[0])
+                params.update({"rvc_model_index": indexPath})
+                params.update({"rvc_model": rvcModels[0]})
+                if not rvc.model_loaded:
+                    print("rvc model load error, using default emotivoice")
+                    wavio.write(str(output_file), gen, config.sampling_rate)
+                else:
+                    rvc.on_button_click(gen,params['rvc_model_index'],str(output_file),params['rvc_pitch'],params['rvc_crepe_hop'],params['rvc_method_entry'])
+            else:
+                print("no rvc model loaded, using default emotivoice")
+                wavio.write(str(output_file), gen, config.sampling_rate)
 
         autoplay = 'autoplay' if params['autoplay'] else ''
         string = f'<audio src="file/{output_file.as_posix()}" controls {autoplay}></audio>'
@@ -568,12 +585,18 @@ def setup():
 def onChangeRvcModel(value):
     indexPath = rvc.selected_model(value)
     params.update({"rvc_model_index": indexPath})
+    params.update({"rvc_model": value})
     return gr.Textbox.update(value=indexPath)
 
-rvcModels = rvc.refresh_model_list()
+def onRefreshModel():
+    rvc.refresh_model_list()
+    return gr.Dropdown.update(choices=rvc.model_folders)
 
-if rvcModels:
-    onChangeRvcModel(rvcModels[0])
+def onChangeRvcMethod(value):
+    params.update({"rvc_method_entry": value})
+    if value == "crepe" or value == "crepe-tiny":
+        return gr.Textbox.update(visible=True)
+    return gr.Textbox.update(visible=False)
 
 def ui():
     global controls, params
@@ -586,13 +609,17 @@ def ui():
 
         controls['prompt'] = gr.Textbox(value=params['prompt'], label='Emotion prompt for speaker (happy/sad)')
         controls['show_text'] = gr.Checkbox(value=params['show_text'], label='Show message text under audio player')
-        controls['voice_dropdown'] = gr.Dropdown(value=params['voice'], choices=speakers, label='Voice')
+        controls['voice_dropdown'] = gr.Dropdown(value=params['voice'], choices=speakers, label='Voice Tone')
         controls['output_dir_textbox'] = gr.Textbox(value=params['output_dir'], label='Custom Output Directory')
         controls['model_swap'] = gr.Checkbox(value=params['model_swap'], label='Unload LLM Model to save VRAM')
         controls['sentence_picker'] = gr.Number(value=params['sentence_length'], precision=0, label='Per Audio Words Slicing (# of words)', interactive=True)
         controls['rvc_model'] = gr.Dropdown(value=params['rvc_model'], choices=rvc.model_folders, label='Rvc Model')
         controls['rvc_model_index'] = gr.Textbox(value=params['rvc_model_index'], label='Rvc Model index')
-        controls['refresh_model'] = gr.Button('refresh model')
+        controls['refresh_model'] = gr.Button('Refresh Rvc Model')
+
+        controls['rvc_method_entry'] = gr.Dropdown(value=params['rvc_method_entry'], choices=["dio", "pm", "harvest", "crepe", "crepe-tiny" ], label='F0 Method')
+        controls['rvc_pitch'] = gr.Textbox(value=params['rvc_pitch'], label='Pitch')
+        controls['rvc_crepe_hop'] = gr.Textbox(value=params['rvc_crepe_hop'], label='Crepe Hop')
         
         with gr.Row():
             controls['rm_tts_from_hist'] = gr.Button('Permanently remove generated tts from the all historical message storages')
@@ -604,7 +631,7 @@ def ui():
             controls['cls_output_dir_cancel'] = gr.Button('Cancel', visible=False)
             controls['cls_output_dir_confirm'] = gr.Button('Confirm (cannot be undone)', variant="stop", visible=False)
 
-    controls['refresh_model'].click(lambda: rvc.refresh_model_list())
+    controls['refresh_model'].click(lambda: onRefreshModel(),outputs=controls['rvc_model'])
     # remove tts history with confirmation
     controls['rm_tts_from_hist_arr'] = [controls['rm_tts_from_hist_confirm'], controls['rm_tts_from_hist'], controls['rm_tts_from_hist_cancel']]
     controls['rm_tts_from_hist'].click(lambda: [gr.update(visible=True), gr.update(visible=False), gr.update(visible=True)], None, controls['rm_tts_from_hist_arr'])
@@ -641,4 +668,7 @@ def ui():
     controls['sentence_picker'].change(lambda x: params.update({'sentence_length': x}), controls['sentence_picker'], None)
     controls['rvc_model'].change(lambda x: onChangeRvcModel(x), controls['rvc_model'], controls['rvc_model_index'])
     controls['rvc_model_index'].change(lambda x: params.update({"rvc_model_index": x}), controls['rvc_model_index'], None)
+    controls['rvc_method_entry'].change(lambda x: onChangeRvcMethod(x), controls['rvc_method_entry'], controls['rvc_crepe_hop'])
+    controls['rvc_pitch'].change(lambda x: params.update({"rvc_pitch": x}), controls['rvc_pitch'], None)
+    controls['rvc_crepe_hop'].change(lambda x: params.update({"rvc_crepe_hop": x}), controls['rvc_crepe_hop'], None)
 

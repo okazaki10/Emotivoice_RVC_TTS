@@ -351,7 +351,7 @@ def get_output_path(file_path):
             return new_file_path  # Found new file path, return it
         index += 1
     
-def on_button_click(audio,file_index,outputFile,samplingRate=16000,pitch=0,crepeHopLength=128,method="crepe"):
+def on_button_click(audio,file_index,outputFile,pitch=0,crepeHopLength=128,method="crepe"):
     # Get values from user input widgets
     sid = 0
     input_audio = audio
@@ -399,10 +399,10 @@ def browse_file():
 
 
 
-def start_processing():
-
-    t = threading.Thread(target=on_button_click)
-    t.start()
+def start_processing(gen, params, output_file):
+    on_button_click(gen,params,str(output_file))
+    #t = threading.Thread(target=lambda: on_button_click(gen,params,str(output_file)))
+    #t.start()
 
 
 # Create tkinter window and widgets
@@ -425,7 +425,6 @@ model_loaded = False
 
 
 def selected_model(choice):
-    #file_index_entry.delete(0, ctk.END)
     model_dir = os.path.join(models_dir, choice)
     pth_files = [f for f in os.listdir(model_dir) if os.path.isfile(os.path.join(model_dir, f)) 
                  and f.endswith(".pth") and not (f.startswith("G_") or f.startswith("D_"))
@@ -442,7 +441,6 @@ def selected_model(choice):
                 index_file = npy_files_dir[0]
                 print(f".pth file directory: {pth_file_path}")
                 print(f".index file directory: {index_file}")
-                #file_index_entry.insert(0, os.path.normpath(index_file))
             else:
                 print(f"Incomplete set of .index files found in {model_dir}")
         else:
