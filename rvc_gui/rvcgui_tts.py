@@ -364,16 +364,16 @@ def on_button_click(audio,file_index,outputFile,pitch=0,crepeHopLength=128,metho
     index_rate = round(index_rate_entry.get(),2)
     global output_file
     output_file = outputFile
-    print("sid: ", sid, "f0_pitch: ", f0_pitch, "f0_file: ", f0_file, "f0_method: ", f0_method,
-          "file_index: ", file_index, "file_big_npy: ", "index_rate: ", index_rate, "output_file: ", output_file, "crepe_hop_length", crepe_hop_length)
+    # print("sid: ", sid, "f0_pitch: ", f0_pitch, "f0_file: ", f0_file, "f0_method: ", f0_method,
+    #       "file_index: ", file_index, "file_big_npy: ", "index_rate: ", index_rate, "output_file: ", output_file, "crepe_hop_length", crepe_hop_length)
     # Call the vc_single function with the user input values
     if model_loaded == True:
         try:
             result, audio_opt = vc_single(
                 0, input_audio, f0_pitch, None, f0_method, file_index, index_rate,crepe_hop_length, output_file)
-            print(os.path.join(output_file))
+            # print(os.path.join(output_file))
             if os.path.exists(output_file) and os.path.getsize(output_file) > 0:
-              print(output_file) 
+            #   print(output_file) 
               message = result
             else: 
               message = result

@@ -35,5 +35,4 @@ torchfcpe
 ffmpy
 python-dotenv
 av
-
-pip install git+https://github.com/Tps-F/fairseq.git@main
+git+https://github.com/okazaki10/fairseq.git@main
