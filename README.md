@@ -25,6 +25,8 @@ cd ../../../
 python sever.py --extensions EmotiVoice_RVC_TTS
 ```
 
+and then put your rvc model in Emotivoice_TTS/rvc_gui/models
+
 # Samlpes
 
 
