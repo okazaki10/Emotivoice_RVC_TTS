@@ -314,7 +314,6 @@ def refresh_model_list():
     global model_folders
     model_folders = [f for f in os.listdir(models_dir) if os.path.isdir(os.path.join(
     models_dir, f)) and any(f.endswith(".pth") for f in os.listdir(os.path.join(models_dir, f)))]
-    print(model_folders)
     return model_folders
 
 def browse_zip():
