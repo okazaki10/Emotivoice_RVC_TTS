@@ -231,6 +231,8 @@ def tts(prompt, content, speaker, models):
         
         text =  g2p_cn_en(content, g2p, lexicon)
 
+        # print(f"text emotivoice {text}")
+
         style_embedding = get_style_embedding(prompt, tokenizer, style_encoder)
         content_embedding = get_style_embedding(content, tokenizer, style_encoder)
 

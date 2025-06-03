@@ -375,14 +375,15 @@ def on_button_click(audio,file_index,outputFile,pitch=0,crepeHopLength=128,metho
               message = result
 
         except Exception as e:
-            print(e)
             message = "Voice conversion failed", e
+            print(message)
 
     # Update the output label with the result
        # output_label.configure(text=result + "\n saved at" + output_file)
 
     else:
         message = "Please select a model and input audio file"
+        print(message)
 
 
 
