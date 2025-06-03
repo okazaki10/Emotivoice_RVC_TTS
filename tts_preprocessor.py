@@ -89,10 +89,18 @@ def remove_surrounded_chars(string):
     # If it matches it will only keep that part as the string, and rend it for further processing
     # Afterwards this expression matches to 'as few symbols as possible (0 upwards) between any
     # asterisks' OR' as few symbols as possible (0 upwards) between an asterisk and the end of the string'
+    # Now also removes text surrounded by parentheses
     if re.search(r'(?<=alt=)(.*)(?=style=)', string, re.DOTALL):
         m = re.search(r'(?<=alt=)(.*)(?=style=)', string, re.DOTALL)
         string = m.group(0)
-    return re.sub(r'\*[^*]*?(\*|$)', '', string)
+    
+    # Remove asterisk-surrounded text
+    string = re.sub(r'\*[^*]*?(\*|$)', '', string)
+    
+    # Remove parentheses-surrounded text
+    string = re.sub(r'\([^)]*\)', '', string)
+    
+    return string
 
 
 def convert_num_locale(text):
