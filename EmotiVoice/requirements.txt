@@ -1,0 +1,12 @@
+torch
+torchaudio
+numpy
+numba
+scipy
+transformers
+soundfile
+yacs
+g2p_en
+jieba
+pypinyin
+streamlit
