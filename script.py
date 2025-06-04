@@ -53,7 +53,7 @@ if __EMOTI_TTS_DEBUG__:
     logger.debug(f'Emotivoice_RVC_TTS ROOT_DIR: {ROOT_DIR}')
 sys.path.append(ROOT_DIR)
 
-from .EmotiVoice.frontend import g2p_cn_en, read_lexicon, G2p
+from .EmotiVoice.frontend import g2p_cn_en, g2p_id, read_lexicon, G2p
 from .EmotiVoice.models.prompt_tts_modified.jets import JETSGenerator
 from .EmotiVoice.models.prompt_tts_modified.simbert import StyleEncoder
 from transformers import AutoTokenizer
@@ -229,9 +229,12 @@ def tts(prompt, content, speaker, models):
     with time_context(f'Calling EmotiVoice RVC tts for \"{content[:20]}\"'):
         (style_encoder, generator, tokenizer, token2id, speaker2id)=models
         
-        text =  g2p_cn_en(content, g2p, lexicon)
+        # text =  g2p_cn_en(content, g2p, lexicon)
 
-        # print(f"text emotivoice {text}")
+        text =  g2p_id(content)
+        
+
+        print(f"text emotivoice {text}")
 
         style_embedding = get_style_embedding(prompt, tokenizer, style_encoder)
         content_embedding = get_style_embedding(content, tokenizer, style_encoder)
