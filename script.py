@@ -229,9 +229,9 @@ def tts(prompt, content, speaker, models):
     with time_context(f'Calling EmotiVoice RVC tts for \"{content[:20]}\"'):
         (style_encoder, generator, tokenizer, token2id, speaker2id)=models
         
-        # text =  g2p_cn_en(content, g2p, lexicon)
+        text =  g2p_cn_en(content, g2p, lexicon)
 
-        text =  g2p_id(content)
+        # text =  g2p_id(content)
         
 
         print(f"text emotivoice {text}")
