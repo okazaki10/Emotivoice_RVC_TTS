@@ -229,9 +229,11 @@ def tts(prompt, content, speaker, models):
     with time_context(f'Calling EmotiVoice RVC tts for \"{content[:20]}\"'):
         (style_encoder, generator, tokenizer, token2id, speaker2id)=models
         
-        text =  g2p_cn_en(content, g2p, lexicon)
-
-        # text =  g2p_id(content)
+        text = ""
+        if params['rvc_language'] == "english_or_chinese":
+            text =  g2p_cn_en(content, g2p, lexicon)
+        else:
+            text =  g2p_id(content)
         
 
         print(f"text emotivoice {text}")
@@ -353,6 +355,7 @@ params = {
     'autoplay': True,
     'disable_text_stream': False,
     'prompt': 'happy',
+    'rvc_language': 'english_or_chinese',
     'rvc_model': '',
     'rvc_model_index': '',
     'rvc_method_entry': 'crepe',
@@ -619,6 +622,7 @@ def ui():
         controls['output_dir_textbox'] = gr.Textbox(value=params['output_dir'], label='Custom Output Directory')
         controls['model_swap'] = gr.Checkbox(value=params['model_swap'], label='Unload LLM Model to save VRAM')
         controls['sentence_picker'] = gr.Number(value=params['sentence_length'], precision=0, label='Per Audio Words Slicing (# of words)', interactive=True)
+        controls['rvc_language'] = gr.Dropdown(value=params['rvc_language'], choices=["english_or_chinese","indonesia"], label='Rvc Language')
         controls['rvc_model'] = gr.Dropdown(value=params['rvc_model'], choices=rvc.model_folders, label='Rvc Model')
         controls['rvc_model_index'] = gr.Textbox(value=params['rvc_model_index'], label='Rvc Model index')
         controls['refresh_model'] = gr.Button('Refresh Rvc Model')
@@ -673,6 +677,7 @@ def ui():
     controls['output_dir_textbox'].change(lambda x: params.update({'output_dir': x}), controls['output_dir_textbox'], None)
     controls['model_swap'].change(lambda x: params.update({'model_swap': x}), controls['model_swap'], None)
     controls['sentence_picker'].change(lambda x: params.update({'sentence_length': x}), controls['sentence_picker'], None)
+    controls['rvc_language'].change(lambda x: params.update({"rvc_language": x}), controls['rvc_language'], None)
     controls['rvc_model'].change(lambda x: onChangeRvcModel(x), controls['rvc_model'], controls['rvc_model_index'])
     controls['rvc_model_index'].change(lambda x: params.update({"rvc_model_index": x}), controls['rvc_model_index'], None)
     controls['rvc_method_entry'].change(lambda x: onChangeRvcMethod(x), controls['rvc_method_entry'], controls['rvc_crepe_hop'])
