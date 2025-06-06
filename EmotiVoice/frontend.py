@@ -104,7 +104,7 @@ INDONESIAN_TO_TOKEN_MAP = {
     # Additional Indonesian sounds
     'ɲ': '[N]',       # Indonesian 'ny' -> closest match
     'x': '[K]',       # Indonesian 'kh' -> k sound
-    'ʔ': '',          # Glottal stop -> silent
+    'ʔ': 'engsp1',          # Glottal stop -> silent
     
     # Fallback for unknown phonemes
     '?': '?',
@@ -167,44 +167,44 @@ def map_indonesian_phonemes_with_sequential_rules(phoneme_list):
     while i < len(phoneme_list):
         current_phoneme = phoneme_list[i]
         
-        # Check for sequential i/a or a/i patterns (including with '?' in between)
-        if i < len(phoneme_list) - 1:
-            next_phoneme = phoneme_list[i + 1]
+        # # Check for sequential i/a or a/i patterns (including with '?' in between)
+        # if i < len(phoneme_list) - 1:
+        #     next_phoneme = phoneme_list[i + 1]
             
-            # Case 1: 'i' followed by 'a' (direct)
-            if current_phoneme == 'i' and next_phoneme == 'a':
-                tokens.append('i1')
-                tokens.append('a1')
-                i += 2  # Skip both phonemes
-                continue
+        #     # Case 1: 'i' followed by 'a' (direct)
+        #     if current_phoneme == 'i' and next_phoneme == 'a':
+        #         tokens.append('i1')
+        #         tokens.append('a1')
+        #         i += 2  # Skip both phonemes
+        #         continue
             
-            # Case 2: 'a' followed by 'i' (direct)
-            elif current_phoneme == 'a' and next_phoneme == 'i':
-                tokens.append('a1')
-                tokens.append('i1')
-                i += 2  # Skip both phonemes
-                continue
+        #     # Case 2: 'a' followed by 'i' (direct)
+        #     elif current_phoneme == 'a' and next_phoneme == 'i':
+        #         tokens.append('a1')
+        #         tokens.append('i1')
+        #         i += 2  # Skip both phonemes
+        #         continue
             
-            # Case 3: 'i' followed by '?' followed by 'a'
-            elif (current_phoneme == 'i' and next_phoneme == 'ʔ' and 
-                  i + 2 < len(phoneme_list) and phoneme_list[i + 2] == 'a'):
-                tokens.append('i1')
-                tokens.append('a1')
-                i += 3  # Skip i, ?, and a
-                continue
+        #     # Case 3: 'i' followed by '?' followed by 'a'
+        #     elif (current_phoneme == 'i' and next_phoneme == 'ʔ' and 
+        #           i + 2 < len(phoneme_list) and phoneme_list[i + 2] == 'a'):
+        #         tokens.append('i1')
+        #         tokens.append('a1')
+        #         i += 3  # Skip i, ?, and a
+        #         continue
             
-            # Case 4: 'a' followed by '?' followed by 'i'
-            elif (current_phoneme == 'a' and next_phoneme == 'ʔ' and 
-                  i + 2 < len(phoneme_list) and phoneme_list[i + 2] == 'i'):
-                tokens.append('a1')
-                tokens.append('i1')
-                i += 3  # Skip a, ?, and i
-                continue
+        #     # Case 4: 'a' followed by '?' followed by 'i'
+        #     elif (current_phoneme == 'a' and next_phoneme == 'ʔ' and 
+        #           i + 2 < len(phoneme_list) and phoneme_list[i + 2] == 'i'):
+        #         tokens.append('a1')
+        #         tokens.append('i1')
+        #         i += 3  # Skip a, ?, and i
+        #         continue
         
-        # Skip standalone '?' characters (they get removed)
-        if current_phoneme == '?':
-            i += 1
-            continue
+        # # Skip standalone '?' characters (they get removed)
+        # if current_phoneme == '?':
+        #     i += 1
+        #     continue
         
         # Default mapping for non-sequential cases
         mapped_token = map_indonesian_phoneme(current_phoneme)

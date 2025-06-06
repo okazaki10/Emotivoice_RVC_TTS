@@ -35,4 +35,5 @@ torchfcpe
 ffmpy
 python-dotenv
 av
+g2p_id_py
 git+https://github.com/okazaki10/fairseq.git@main

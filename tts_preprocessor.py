@@ -3,8 +3,9 @@
 import re
 
 from num2words import num2words
+from collections import defaultdict
 
-punctuation = r'[\s,.?!/)\'\]>]'
+punctuation = r'[\s,.?!/)\]>]'
 alphabet_map = {
     "A": " Eh ",
     "B": " Bee ",
@@ -58,11 +59,11 @@ def replace_invalid_chars(string):
     string = remove_surrounded_chars(string)
     string = string.replace('"', '')
     string = string.replace('`', '')
-    string = string.replace("'","")
+    # string = string.replace("'","")
     string = string.replace('\u201D', '').replace('\u201C', '')  # right and left quote
     string = string.replace('\u201F', '')  # italic looking quote
     string = string.replace('\n', ' ')
-    string = string.replace('&#x27;', '')
+    string = string.replace('&#x27;', '\'')
     string = string.replace('AI;', 'Artificial Intelligence!')
     string = string.replace('iddqd;', 'Immortality cheat code')
     string = string.replace('😉;', 'wink wink!')
@@ -82,6 +83,44 @@ def replace_numbers(string):
     string = num_to_words(string)
     return string
 
+def parse_brackets(text):
+    # Find all content within square brackets
+    brackets = re.findall(r'\[([^\]]*)\]', text)
+    
+    # Dictionary to store parsed parameters
+    params = defaultdict(list)
+    
+    for bracket in brackets:
+        if ':' in bracket:
+            # Split by colon to get key:value pairs
+            key, value = bracket.split(':', 1)  # Split only on first colon
+            params[key].append(value)
+        else:
+            # If no colon, treat the whole thing as a key with empty value
+            params[bracket].append('')
+    
+    # Convert to regular dict and flatten single-item lists
+    result = {}
+    for key, values in params.items():
+        if len(values) == 1:
+            result[key] = values[0]
+        else:
+            result[key] = values
+    
+    return result
+
+def parse_brackets_keep_all(text):
+    brackets = re.findall(r'\[([^\]]*)\]', text)
+    params = defaultdict(list)
+    
+    for bracket in brackets:
+        if ':' in bracket:
+            key, value = bracket.split(':', 1)
+            params[key].append(value)
+        else:
+            params[bracket].append('')
+    
+    return dict(params)
 
 def remove_surrounded_chars(string):
     # first this expression will check if there is a string nested exclusively between a alt=
@@ -99,8 +138,14 @@ def remove_surrounded_chars(string):
     
     # Remove parentheses-surrounded text
     string = re.sub(r'\([^)]*\)', '', string)
+
+    print(f"all dictionary {parse_brackets_keep_all(string)}")
+
+    # Remove square-surrounded text
+    string = re.sub(r'\[[^\]]*\]', '', string)
     
     return string
+
 
 
 def convert_num_locale(text):
@@ -233,7 +278,7 @@ def clean_whitespace(string):
 
 
 def __main__(args):
-    print(preprocess_all(args[1]))
+    print(preprocess_all("test asdas'asdasd asasd&#x27;asdasd"))
 
 
 if __name__ == "__main__":

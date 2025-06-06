@@ -53,6 +53,7 @@ def get_eng_phoneme(text, g2p, lexicon):
             if "sp" not in phones[-1]:
                 phones += ["engsp1"]
         else:
+            w = w.replace("'","")
             phone=g2p(w)
             if not phone:
                 continue
