@@ -622,7 +622,7 @@ def ui():
         controls['output_dir_textbox'] = gr.Textbox(value=params['output_dir'], label='Custom Output Directory')
         controls['model_swap'] = gr.Checkbox(value=params['model_swap'], label='Unload LLM Model to save VRAM')
         controls['sentence_picker'] = gr.Number(value=params['sentence_length'], precision=0, label='Per Audio Words Slicing (# of words)', interactive=True)
-        controls['rvc_language'] = gr.Dropdown(value=params['rvc_language'], choices=["english_or_chinese","indonesia"], label='Rvc Language')
+        controls['rvc_language'] = gr.Dropdown(value=params['rvc_language'], choices=["english_or_chinese","indonesia"], label='Language')
         controls['rvc_model'] = gr.Dropdown(value=params['rvc_model'], choices=rvc.model_folders, label='Rvc Model')
         controls['rvc_model_index'] = gr.Textbox(value=params['rvc_model_index'], label='Rvc Model index')
         controls['refresh_model'] = gr.Button('Refresh Rvc Model')
